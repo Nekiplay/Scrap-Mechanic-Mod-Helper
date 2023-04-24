@@ -18,7 +18,6 @@ namespace Scrap_Mechanic_Mod_Helper.parsers
             string path = scrap.gameDirectory + "\\Survival\\CraftingRecipes\\craftbot.json";
             string json = File.ReadAllText(path);
             List<CraftRaw> craftsRaw = JsonConvert.DeserializeObject<List<CraftRaw>>(json);
-            Console.WriteLine(craftsRaw.Count);
             foreach (var rawCraft in craftsRaw)
             {
                 Craft craft = new Craft();
@@ -50,7 +49,6 @@ namespace Scrap_Mechanic_Mod_Helper.parsers
                 crafts.Add(craft);
 
             }
-            Console.WriteLine(crafts.Count);
         }
         public class ExtraRaw
         {

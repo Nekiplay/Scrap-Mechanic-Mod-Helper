@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,12 +16,12 @@ namespace Scrap_Mechanic_Mod_Helper.data
         {
             this.gameDirectory = game;
         }
-        private InventoryDescription GetInventoryDescriptionSurvival(Language language)
+        private InventoryDescription GetInventoryDescriptionSurvival(string itemId, Language language)
         {
             string filePath = gameDirectory + @"\Survival\Gui\Language\" + language.ToString() + @"\inventoryDescriptions.json";
             string text = File.ReadAllText(filePath);
             JObject googleSearch = JObject.Parse(text);
-            var itemT = googleSearch[Id];
+            var itemT = googleSearch[itemId];
             if (itemT != null)
             {
                 InventoryDescription inventoryDescription = new InventoryDescription();
@@ -38,12 +39,12 @@ namespace Scrap_Mechanic_Mod_Helper.data
             }
             return null;
         }
-        private InventoryDescription GetInventoryDescriptionCreative(Language language)
+        private InventoryDescription GetInventoryDescriptionCreative(string itemId, Language language)
         {
             string filePath = gameDirectory + @"\Data\Gui\Language\" + language.ToString() + @"\InventoryItemDescriptions.json";
             string text = File.ReadAllText(filePath);
             JObject googleSearch = JObject.Parse(text);
-            var itemT = googleSearch[Id];
+            var itemT = googleSearch[itemId];
             if (itemT != null)
             {
                 InventoryDescription inventoryDescription = new InventoryDescription();
@@ -63,10 +64,10 @@ namespace Scrap_Mechanic_Mod_Helper.data
         }
         public InventoryDescription GetInventoryLanguage(Language language)
         {
-            var survival = GetInventoryDescriptionSurvival(language);
+            var survival = GetInventoryDescriptionSurvival(Id, language);
             if (survival == null)
             {
-                return GetInventoryDescriptionCreative(language);
+                return GetInventoryDescriptionCreative(Id, language);
             }
             return survival;
         }
@@ -75,5 +76,18 @@ namespace Scrap_Mechanic_Mod_Helper.data
         public string Id;
 
         private string gameDirectory;
+
+        public static Item FromTitle(Scrap_Mechanic game, string title, Language language)
+        {
+            foreach (var item in game.itemParser.items)
+            {
+                InventoryDescription inventoryDescription = item.Value.GetInventoryLanguage(language);
+                if (inventoryDescription != null && inventoryDescription.Title.Equals(title))
+                {
+                    return item.Value;
+                }
+            }
+            return null;
+        }
     }
 }

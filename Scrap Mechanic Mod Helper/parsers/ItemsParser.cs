@@ -19,7 +19,6 @@ namespace Scrap_Mechanic_Mod_Helper.parsers
         {
             game = scrap.gameDirectory;
             string filePath = game + @"\Survival\Scripts\game\survival_items.lua";
-            Console.WriteLine(filePath);
             string[] lines = File.ReadAllLines(filePath);
             foreach (var line in lines)
             {
@@ -31,7 +30,7 @@ namespace Scrap_Mechanic_Mod_Helper.parsers
             }
         }
 
-        private Item parseLine(string line)
+        public Item parseLine(string line)
         {
             Match match = Regex.Match(line, "(.*)=.*new(.*)");
             if (match.Success)
